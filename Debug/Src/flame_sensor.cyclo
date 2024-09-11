@@ -1,0 +1,2 @@
+../Src/flame_sensor.c:11:6:flame_sensor_init	1
+../Src/flame_sensor.c:28:10:flame_sensor_read	1

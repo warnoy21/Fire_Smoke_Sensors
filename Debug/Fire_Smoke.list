@@ -1,0 +1,589 @@
+
+Fire_Smoke.elf:     file format elf32-littlearm
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .isr_vector   00000198  08000000  08000000  00001000  2**0
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  1 .text         00000318  08000198  08000198  00001198  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  2 .rodata       00000000  080004b0  080004b8  000014b8  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  3 .ARM.extab    00000000  080004b0  080004b0  000014b8  2**0
+                  CONTENTS
+  4 .ARM          00000000  080004b0  080004b0  000014b8  2**0
+                  CONTENTS
+  5 .preinit_array 00000000  080004b0  080004b8  000014b8  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  6 .init_array   00000004  080004b0  080004b0  000014b0  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  7 .fini_array   00000004  080004b4  080004b4  000014b4  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  8 .data         00000000  20000000  20000000  000014b8  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  9 .bss          00000024  20000000  080004b8  00002000  2**2
+                  ALLOC
+ 10 ._user_heap_stack 00000604  20000024  080004b8  00002024  2**0
+                  ALLOC
+ 11 .ARM.attributes 00000030  00000000  00000000  000014b8  2**0
+                  CONTENTS, READONLY
+ 12 .debug_info   00000ad1  00000000  00000000  000014e8  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 13 .debug_abbrev 0000033a  00000000  00000000  00001fb9  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 14 .debug_aranges 000000b0  00000000  00000000  000022f8  2**3
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 15 .debug_rnglists 00000070  00000000  00000000  000023a8  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 16 .debug_macro  0000dea8  00000000  00000000  00002418  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 17 .debug_line   000011fd  00000000  00000000  000102c0  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 18 .debug_str    0004ff59  00000000  00000000  000114bd  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 19 .comment      00000043  00000000  00000000  00061416  2**0
+                  CONTENTS, READONLY
+ 20 .debug_frame  00000168  00000000  00000000  0006145c  2**2
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 21 .debug_line_str 00000057  00000000  00000000  000615c4  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+
+Disassembly of section .text:
+
+08000198 <__do_global_dtors_aux>:
+ 8000198:	b510      	push	{r4, lr}
+ 800019a:	4c05      	ldr	r4, [pc, #20]	@ (80001b0 <__do_global_dtors_aux+0x18>)
+ 800019c:	7823      	ldrb	r3, [r4, #0]
+ 800019e:	b933      	cbnz	r3, 80001ae <__do_global_dtors_aux+0x16>
+ 80001a0:	4b04      	ldr	r3, [pc, #16]	@ (80001b4 <__do_global_dtors_aux+0x1c>)
+ 80001a2:	b113      	cbz	r3, 80001aa <__do_global_dtors_aux+0x12>
+ 80001a4:	4804      	ldr	r0, [pc, #16]	@ (80001b8 <__do_global_dtors_aux+0x20>)
+ 80001a6:	f3af 8000 	nop.w
+ 80001aa:	2301      	movs	r3, #1
+ 80001ac:	7023      	strb	r3, [r4, #0]
+ 80001ae:	bd10      	pop	{r4, pc}
+ 80001b0:	20000000 	.word	0x20000000
+ 80001b4:	00000000 	.word	0x00000000
+ 80001b8:	08000498 	.word	0x08000498
+
+080001bc <frame_dummy>:
+ 80001bc:	b508      	push	{r3, lr}
+ 80001be:	4b03      	ldr	r3, [pc, #12]	@ (80001cc <frame_dummy+0x10>)
+ 80001c0:	b11b      	cbz	r3, 80001ca <frame_dummy+0xe>
+ 80001c2:	4903      	ldr	r1, [pc, #12]	@ (80001d0 <frame_dummy+0x14>)
+ 80001c4:	4803      	ldr	r0, [pc, #12]	@ (80001d4 <frame_dummy+0x18>)
+ 80001c6:	f3af 8000 	nop.w
+ 80001ca:	bd08      	pop	{r3, pc}
+ 80001cc:	00000000 	.word	0x00000000
+ 80001d0:	20000004 	.word	0x20000004
+ 80001d4:	08000498 	.word	0x08000498
+
+080001d8 <flame_sensor_init>:
+ */
+
+
+#include "flame_sensor.h"
+
+void flame_sensor_init (void){
+ 80001d8:	b480      	push	{r7}
+ 80001da:	af00      	add	r7, sp, #0
+
+	/***Configure Pin***/
+
+	/*Enable Clock access to pin PA15*/
+	RCC-> AHB1ENR |= GPIOAEN;
+ 80001dc:	4b0b      	ldr	r3, [pc, #44]	@ (800020c <flame_sensor_init+0x34>)
+ 80001de:	6b1b      	ldr	r3, [r3, #48]	@ 0x30
+ 80001e0:	4a0a      	ldr	r2, [pc, #40]	@ (800020c <flame_sensor_init+0x34>)
+ 80001e2:	f043 0301 	orr.w	r3, r3, #1
+ 80001e6:	6313      	str	r3, [r2, #48]	@ 0x30
+
+	/*Initialize PA15 mode*/
+	//clear and explicitly state it to ensure input mode
+	GPIOA->MODER &=~(1U<<31);
+ 80001e8:	4b09      	ldr	r3, [pc, #36]	@ (8000210 <flame_sensor_init+0x38>)
+ 80001ea:	681b      	ldr	r3, [r3, #0]
+ 80001ec:	4a08      	ldr	r2, [pc, #32]	@ (8000210 <flame_sensor_init+0x38>)
+ 80001ee:	f023 4300 	bic.w	r3, r3, #2147483648	@ 0x80000000
+ 80001f2:	6013      	str	r3, [r2, #0]
+	GPIOA->MODER &=~(1U<<30);
+ 80001f4:	4b06      	ldr	r3, [pc, #24]	@ (8000210 <flame_sensor_init+0x38>)
+ 80001f6:	681b      	ldr	r3, [r3, #0]
+ 80001f8:	4a05      	ldr	r2, [pc, #20]	@ (8000210 <flame_sensor_init+0x38>)
+ 80001fa:	f023 4380 	bic.w	r3, r3, #1073741824	@ 0x40000000
+ 80001fe:	6013      	str	r3, [r2, #0]
+
+
+	/*Read data from PA15*/
+}
+ 8000200:	bf00      	nop
+ 8000202:	46bd      	mov	sp, r7
+ 8000204:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8000208:	4770      	bx	lr
+ 800020a:	bf00      	nop
+ 800020c:	40023800 	.word	0x40023800
+ 8000210:	40020000 	.word	0x40020000
+
+08000214 <flame_sensor_read>:
+
+
+uint32_t flame_sensor_read(void){
+ 8000214:	b480      	push	{r7}
+ 8000216:	af00      	add	r7, sp, #0
+
+
+	return (GPIOA->IDR & (1U << 15));  // Read PA15
+ 8000218:	4b04      	ldr	r3, [pc, #16]	@ (800022c <flame_sensor_read+0x18>)
+ 800021a:	691b      	ldr	r3, [r3, #16]
+ 800021c:	f403 4300 	and.w	r3, r3, #32768	@ 0x8000
+
+}
+ 8000220:	4618      	mov	r0, r3
+ 8000222:	46bd      	mov	sp, r7
+ 8000224:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8000228:	4770      	bx	lr
+ 800022a:	bf00      	nop
+ 800022c:	40020000 	.word	0x40020000
+
+08000230 <main>:
+void smoke_presence (uint32_t val);
+uint32_t  fire_detector;
+uint32_t  smoke_detector;
+
+
+int main(){
+ 8000230:	b580      	push	{r7, lr}
+ 8000232:	af00      	add	r7, sp, #0
+
+
+	flame_sensor_init();
+ 8000234:	f7ff ffd0 	bl	80001d8 <flame_sensor_init>
+	smoke_adc_init();
+ 8000238:	f000 f886 	bl	8000348 <smoke_adc_init>
+	start_adc_conv();
+ 800023c:	f000 f8bc 	bl	80003b8 <start_adc_conv>
+
+	/*init PC3 led*/
+	RCC->AHB1ENR |=(1U<<2);
+ 8000240:	4b13      	ldr	r3, [pc, #76]	@ (8000290 <main+0x60>)
+ 8000242:	6b1b      	ldr	r3, [r3, #48]	@ 0x30
+ 8000244:	4a12      	ldr	r2, [pc, #72]	@ (8000290 <main+0x60>)
+ 8000246:	f043 0304 	orr.w	r3, r3, #4
+ 800024a:	6313      	str	r3, [r2, #48]	@ 0x30
+	GPIOC->MODER &=~(1U<<7);
+ 800024c:	4b11      	ldr	r3, [pc, #68]	@ (8000294 <main+0x64>)
+ 800024e:	681b      	ldr	r3, [r3, #0]
+ 8000250:	4a10      	ldr	r2, [pc, #64]	@ (8000294 <main+0x64>)
+ 8000252:	f023 0380 	bic.w	r3, r3, #128	@ 0x80
+ 8000256:	6013      	str	r3, [r2, #0]
+	GPIOC->MODER |=(1U<<6);
+ 8000258:	4b0e      	ldr	r3, [pc, #56]	@ (8000294 <main+0x64>)
+ 800025a:	681b      	ldr	r3, [r3, #0]
+ 800025c:	4a0d      	ldr	r2, [pc, #52]	@ (8000294 <main+0x64>)
+ 800025e:	f043 0340 	orr.w	r3, r3, #64	@ 0x40
+ 8000262:	6013      	str	r3, [r2, #0]
+
+
+
+	while(1){
+
+		fire_detector = flame_sensor_read();
+ 8000264:	f7ff ffd6 	bl	8000214 <flame_sensor_read>
+ 8000268:	4603      	mov	r3, r0
+ 800026a:	4a0b      	ldr	r2, [pc, #44]	@ (8000298 <main+0x68>)
+ 800026c:	6013      	str	r3, [r2, #0]
+		fire_presence(fire_detector);
+ 800026e:	4b0a      	ldr	r3, [pc, #40]	@ (8000298 <main+0x68>)
+ 8000270:	681b      	ldr	r3, [r3, #0]
+ 8000272:	4618      	mov	r0, r3
+ 8000274:	f000 f814 	bl	80002a0 <fire_presence>
+
+		smoke_detector = read_smoke_val();
+ 8000278:	f000 f8ae 	bl	80003d8 <read_smoke_val>
+ 800027c:	4603      	mov	r3, r0
+ 800027e:	4a07      	ldr	r2, [pc, #28]	@ (800029c <main+0x6c>)
+ 8000280:	6013      	str	r3, [r2, #0]
+		smoke_presence(smoke_detector);
+ 8000282:	4b06      	ldr	r3, [pc, #24]	@ (800029c <main+0x6c>)
+ 8000284:	681b      	ldr	r3, [r3, #0]
+ 8000286:	4618      	mov	r0, r3
+ 8000288:	f000 f834 	bl	80002f4 <smoke_presence>
+		fire_detector = flame_sensor_read();
+ 800028c:	bf00      	nop
+ 800028e:	e7e9      	b.n	8000264 <main+0x34>
+ 8000290:	40023800 	.word	0x40023800
+ 8000294:	40020800 	.word	0x40020800
+ 8000298:	2000001c 	.word	0x2000001c
+ 800029c:	20000020 	.word	0x20000020
+
+080002a0 <fire_presence>:
+
+
+
+}
+
+void fire_presence (uint32_t val){
+ 80002a0:	b480      	push	{r7}
+ 80002a2:	b085      	sub	sp, #20
+ 80002a4:	af00      	add	r7, sp, #0
+ 80002a6:	6078      	str	r0, [r7, #4]
+
+	if (val > 0){
+ 80002a8:	687b      	ldr	r3, [r7, #4]
+ 80002aa:	2b00      	cmp	r3, #0
+ 80002ac:	d006      	beq.n	80002bc <fire_presence+0x1c>
+
+				GPIOC->ODR &= ~(1U << 3); //set bit 3 (PC3 low)
+ 80002ae:	4b0f      	ldr	r3, [pc, #60]	@ (80002ec <fire_presence+0x4c>)
+ 80002b0:	695b      	ldr	r3, [r3, #20]
+ 80002b2:	4a0e      	ldr	r2, [pc, #56]	@ (80002ec <fire_presence+0x4c>)
+ 80002b4:	f023 0308 	bic.w	r3, r3, #8
+ 80002b8:	6153      	str	r3, [r2, #20]
+ 80002ba:	e005      	b.n	80002c8 <fire_presence+0x28>
+			}
+			else {
+				GPIOC->ODR |= (1U << 3);     // Set bit 3 (PC3 high)
+ 80002bc:	4b0b      	ldr	r3, [pc, #44]	@ (80002ec <fire_presence+0x4c>)
+ 80002be:	695b      	ldr	r3, [r3, #20]
+ 80002c0:	4a0a      	ldr	r2, [pc, #40]	@ (80002ec <fire_presence+0x4c>)
+ 80002c2:	f043 0308 	orr.w	r3, r3, #8
+ 80002c6:	6153      	str	r3, [r2, #20]
+			}
+	for(int i = 0 ; i< 100000;i++){}
+ 80002c8:	2300      	movs	r3, #0
+ 80002ca:	60fb      	str	r3, [r7, #12]
+ 80002cc:	e002      	b.n	80002d4 <fire_presence+0x34>
+ 80002ce:	68fb      	ldr	r3, [r7, #12]
+ 80002d0:	3301      	adds	r3, #1
+ 80002d2:	60fb      	str	r3, [r7, #12]
+ 80002d4:	68fb      	ldr	r3, [r7, #12]
+ 80002d6:	4a06      	ldr	r2, [pc, #24]	@ (80002f0 <fire_presence+0x50>)
+ 80002d8:	4293      	cmp	r3, r2
+ 80002da:	ddf8      	ble.n	80002ce <fire_presence+0x2e>
+}
+ 80002dc:	bf00      	nop
+ 80002de:	bf00      	nop
+ 80002e0:	3714      	adds	r7, #20
+ 80002e2:	46bd      	mov	sp, r7
+ 80002e4:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 80002e8:	4770      	bx	lr
+ 80002ea:	bf00      	nop
+ 80002ec:	40020800 	.word	0x40020800
+ 80002f0:	0001869f 	.word	0x0001869f
+
+080002f4 <smoke_presence>:
+
+void smoke_presence (uint32_t val){
+ 80002f4:	b480      	push	{r7}
+ 80002f6:	b085      	sub	sp, #20
+ 80002f8:	af00      	add	r7, sp, #0
+ 80002fa:	6078      	str	r0, [r7, #4]
+	if (val > 500){
+ 80002fc:	687b      	ldr	r3, [r7, #4]
+ 80002fe:	f5b3 7ffa 	cmp.w	r3, #500	@ 0x1f4
+ 8000302:	d906      	bls.n	8000312 <smoke_presence+0x1e>
+
+
+				GPIOC->ODR |= (1U << 3);     // Set bit 3 (PC3 high)
+ 8000304:	4b0e      	ldr	r3, [pc, #56]	@ (8000340 <smoke_presence+0x4c>)
+ 8000306:	695b      	ldr	r3, [r3, #20]
+ 8000308:	4a0d      	ldr	r2, [pc, #52]	@ (8000340 <smoke_presence+0x4c>)
+ 800030a:	f043 0308 	orr.w	r3, r3, #8
+ 800030e:	6153      	str	r3, [r2, #20]
+ 8000310:	e005      	b.n	800031e <smoke_presence+0x2a>
+
+	}
+	else {
+
+				GPIOC->ODR &= ~(1U << 3); //set bit 3 (PC3 low)
+ 8000312:	4b0b      	ldr	r3, [pc, #44]	@ (8000340 <smoke_presence+0x4c>)
+ 8000314:	695b      	ldr	r3, [r3, #20]
+ 8000316:	4a0a      	ldr	r2, [pc, #40]	@ (8000340 <smoke_presence+0x4c>)
+ 8000318:	f023 0308 	bic.w	r3, r3, #8
+ 800031c:	6153      	str	r3, [r2, #20]
+	}
+	for(int i = 0 ; i< 100000;i++){}
+ 800031e:	2300      	movs	r3, #0
+ 8000320:	60fb      	str	r3, [r7, #12]
+ 8000322:	e002      	b.n	800032a <smoke_presence+0x36>
+ 8000324:	68fb      	ldr	r3, [r7, #12]
+ 8000326:	3301      	adds	r3, #1
+ 8000328:	60fb      	str	r3, [r7, #12]
+ 800032a:	68fb      	ldr	r3, [r7, #12]
+ 800032c:	4a05      	ldr	r2, [pc, #20]	@ (8000344 <smoke_presence+0x50>)
+ 800032e:	4293      	cmp	r3, r2
+ 8000330:	ddf8      	ble.n	8000324 <smoke_presence+0x30>
+}
+ 8000332:	bf00      	nop
+ 8000334:	bf00      	nop
+ 8000336:	3714      	adds	r7, #20
+ 8000338:	46bd      	mov	sp, r7
+ 800033a:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 800033e:	4770      	bx	lr
+ 8000340:	40020800 	.word	0x40020800
+ 8000344:	0001869f 	.word	0x0001869f
+
+08000348 <smoke_adc_init>:
+ */
+
+
+#include "smoke_adc.h"
+
+void smoke_adc_init(void){
+ 8000348:	b480      	push	{r7}
+ 800034a:	af00      	add	r7, sp, #0
+
+	RCC->AHB1ENR |= GPIOA_CLK_EN;
+ 800034c:	4b17      	ldr	r3, [pc, #92]	@ (80003ac <smoke_adc_init+0x64>)
+ 800034e:	6b1b      	ldr	r3, [r3, #48]	@ 0x30
+ 8000350:	4a16      	ldr	r2, [pc, #88]	@ (80003ac <smoke_adc_init+0x64>)
+ 8000352:	f043 0301 	orr.w	r3, r3, #1
+ 8000356:	6313      	str	r3, [r2, #48]	@ 0x30
+	GPIOA->MODER |= GPIOA_MODE;
+ 8000358:	4b15      	ldr	r3, [pc, #84]	@ (80003b0 <smoke_adc_init+0x68>)
+ 800035a:	681b      	ldr	r3, [r3, #0]
+ 800035c:	4a14      	ldr	r2, [pc, #80]	@ (80003b0 <smoke_adc_init+0x68>)
+ 800035e:	f043 030c 	orr.w	r3, r3, #12
+ 8000362:	6013      	str	r3, [r2, #0]
+
+	RCC->APB2ENR |=ADC_CLK_EN;
+ 8000364:	4b11      	ldr	r3, [pc, #68]	@ (80003ac <smoke_adc_init+0x64>)
+ 8000366:	6c5b      	ldr	r3, [r3, #68]	@ 0x44
+ 8000368:	4a10      	ldr	r2, [pc, #64]	@ (80003ac <smoke_adc_init+0x64>)
+ 800036a:	f443 7380 	orr.w	r3, r3, #256	@ 0x100
+ 800036e:	6453      	str	r3, [r2, #68]	@ 0x44
+	ADC1->SQR1 	 &= ~(ADC_CONV_LENGHT); //Explicitly clear and set pins to 0
+ 8000370:	4b10      	ldr	r3, [pc, #64]	@ (80003b4 <smoke_adc_init+0x6c>)
+ 8000372:	6adb      	ldr	r3, [r3, #44]	@ 0x2c
+ 8000374:	4a0f      	ldr	r2, [pc, #60]	@ (80003b4 <smoke_adc_init+0x6c>)
+ 8000376:	f423 0370 	bic.w	r3, r3, #15728640	@ 0xf00000
+ 800037a:	62d3      	str	r3, [r2, #44]	@ 0x2c
+	ADC1->SQR3	 |= ADC_priority_1;
+ 800037c:	4b0d      	ldr	r3, [pc, #52]	@ (80003b4 <smoke_adc_init+0x6c>)
+ 800037e:	6b5b      	ldr	r3, [r3, #52]	@ 0x34
+ 8000380:	4a0c      	ldr	r2, [pc, #48]	@ (80003b4 <smoke_adc_init+0x6c>)
+ 8000382:	f043 0301 	orr.w	r3, r3, #1
+ 8000386:	6353      	str	r3, [r2, #52]	@ 0x34
+	ADC1->CR2	 |= ADC_cont_conv;
+ 8000388:	4b0a      	ldr	r3, [pc, #40]	@ (80003b4 <smoke_adc_init+0x6c>)
+ 800038a:	689b      	ldr	r3, [r3, #8]
+ 800038c:	4a09      	ldr	r2, [pc, #36]	@ (80003b4 <smoke_adc_init+0x6c>)
+ 800038e:	f043 0302 	orr.w	r3, r3, #2
+ 8000392:	6093      	str	r3, [r2, #8]
+	ADC1->CR2	 |= ADC_ON;
+ 8000394:	4b07      	ldr	r3, [pc, #28]	@ (80003b4 <smoke_adc_init+0x6c>)
+ 8000396:	689b      	ldr	r3, [r3, #8]
+ 8000398:	4a06      	ldr	r2, [pc, #24]	@ (80003b4 <smoke_adc_init+0x6c>)
+ 800039a:	f043 0301 	orr.w	r3, r3, #1
+ 800039e:	6093      	str	r3, [r2, #8]
+
+
+}
+ 80003a0:	bf00      	nop
+ 80003a2:	46bd      	mov	sp, r7
+ 80003a4:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 80003a8:	4770      	bx	lr
+ 80003aa:	bf00      	nop
+ 80003ac:	40023800 	.word	0x40023800
+ 80003b0:	40020000 	.word	0x40020000
+ 80003b4:	40012000 	.word	0x40012000
+
+080003b8 <start_adc_conv>:
+
+void start_adc_conv(void){
+ 80003b8:	b480      	push	{r7}
+ 80003ba:	af00      	add	r7, sp, #0
+
+	ADC1->CR2 |= ADC_start_conv;
+ 80003bc:	4b05      	ldr	r3, [pc, #20]	@ (80003d4 <start_adc_conv+0x1c>)
+ 80003be:	689b      	ldr	r3, [r3, #8]
+ 80003c0:	4a04      	ldr	r2, [pc, #16]	@ (80003d4 <start_adc_conv+0x1c>)
+ 80003c2:	f043 4380 	orr.w	r3, r3, #1073741824	@ 0x40000000
+ 80003c6:	6093      	str	r3, [r2, #8]
+}
+ 80003c8:	bf00      	nop
+ 80003ca:	46bd      	mov	sp, r7
+ 80003cc:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 80003d0:	4770      	bx	lr
+ 80003d2:	bf00      	nop
+ 80003d4:	40012000 	.word	0x40012000
+
+080003d8 <read_smoke_val>:
+
+
+uint32_t read_smoke_val(void){
+ 80003d8:	b480      	push	{r7}
+ 80003da:	af00      	add	r7, sp, #0
+
+	while (!(ADC1->SR & ADC_EOC)){} //wait for convertion to finish
+ 80003dc:	bf00      	nop
+ 80003de:	4b06      	ldr	r3, [pc, #24]	@ (80003f8 <read_smoke_val+0x20>)
+ 80003e0:	681b      	ldr	r3, [r3, #0]
+ 80003e2:	f003 0302 	and.w	r3, r3, #2
+ 80003e6:	2b00      	cmp	r3, #0
+ 80003e8:	d0f9      	beq.n	80003de <read_smoke_val+0x6>
+
+
+	return ADC1->DR;
+ 80003ea:	4b03      	ldr	r3, [pc, #12]	@ (80003f8 <read_smoke_val+0x20>)
+ 80003ec:	6cdb      	ldr	r3, [r3, #76]	@ 0x4c
+}
+ 80003ee:	4618      	mov	r0, r3
+ 80003f0:	46bd      	mov	sp, r7
+ 80003f2:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 80003f6:	4770      	bx	lr
+ 80003f8:	40012000 	.word	0x40012000
+
+080003fc <Reset_Handler>:
+
+  .section .text.Reset_Handler
+  .weak Reset_Handler
+  .type Reset_Handler, %function
+Reset_Handler:
+  ldr   r0, =_estack
+ 80003fc:	480d      	ldr	r0, [pc, #52]	@ (8000434 <LoopForever+0x2>)
+  mov   sp, r0          /* set stack pointer */
+ 80003fe:	4685      	mov	sp, r0
+/* Call the clock system initialization function.*/
+  bl  SystemInit
+ 8000400:	f3af 8000 	nop.w
+
+/* Copy the data segment initializers from flash to SRAM */
+  ldr r0, =_sdata
+ 8000404:	480c      	ldr	r0, [pc, #48]	@ (8000438 <LoopForever+0x6>)
+  ldr r1, =_edata
+ 8000406:	490d      	ldr	r1, [pc, #52]	@ (800043c <LoopForever+0xa>)
+  ldr r2, =_sidata
+ 8000408:	4a0d      	ldr	r2, [pc, #52]	@ (8000440 <LoopForever+0xe>)
+  movs r3, #0
+ 800040a:	2300      	movs	r3, #0
+  b LoopCopyDataInit
+ 800040c:	e002      	b.n	8000414 <LoopCopyDataInit>
+
+0800040e <CopyDataInit>:
+
+CopyDataInit:
+  ldr r4, [r2, r3]
+ 800040e:	58d4      	ldr	r4, [r2, r3]
+  str r4, [r0, r3]
+ 8000410:	50c4      	str	r4, [r0, r3]
+  adds r3, r3, #4
+ 8000412:	3304      	adds	r3, #4
+
+08000414 <LoopCopyDataInit>:
+
+LoopCopyDataInit:
+  adds r4, r0, r3
+ 8000414:	18c4      	adds	r4, r0, r3
+  cmp r4, r1
+ 8000416:	428c      	cmp	r4, r1
+  bcc CopyDataInit
+ 8000418:	d3f9      	bcc.n	800040e <CopyDataInit>
+
+/* Zero fill the bss segment. */
+  ldr r2, =_sbss
+ 800041a:	4a0a      	ldr	r2, [pc, #40]	@ (8000444 <LoopForever+0x12>)
+  ldr r4, =_ebss
+ 800041c:	4c0a      	ldr	r4, [pc, #40]	@ (8000448 <LoopForever+0x16>)
+  movs r3, #0
+ 800041e:	2300      	movs	r3, #0
+  b LoopFillZerobss
+ 8000420:	e001      	b.n	8000426 <LoopFillZerobss>
+
+08000422 <FillZerobss>:
+
+FillZerobss:
+  str  r3, [r2]
+ 8000422:	6013      	str	r3, [r2, #0]
+  adds r2, r2, #4
+ 8000424:	3204      	adds	r2, #4
+
+08000426 <LoopFillZerobss>:
+
+LoopFillZerobss:
+  cmp r2, r4
+ 8000426:	42a2      	cmp	r2, r4
+  bcc FillZerobss
+ 8000428:	d3fb      	bcc.n	8000422 <FillZerobss>
+
+/* Call static constructors */
+  bl __libc_init_array
+ 800042a:	f000 f811 	bl	8000450 <__libc_init_array>
+/* Call the application's entry point.*/
+  bl main
+ 800042e:	f7ff feff 	bl	8000230 <main>
+
+08000432 <LoopForever>:
+
+LoopForever:
+  b LoopForever
+ 8000432:	e7fe      	b.n	8000432 <LoopForever>
+  ldr   r0, =_estack
+ 8000434:	20020000 	.word	0x20020000
+  ldr r0, =_sdata
+ 8000438:	20000000 	.word	0x20000000
+  ldr r1, =_edata
+ 800043c:	20000000 	.word	0x20000000
+  ldr r2, =_sidata
+ 8000440:	080004b8 	.word	0x080004b8
+  ldr r2, =_sbss
+ 8000444:	20000000 	.word	0x20000000
+  ldr r4, =_ebss
+ 8000448:	20000024 	.word	0x20000024
+
+0800044c <ADC_IRQHandler>:
+ * @retval : None
+*/
+  .section .text.Default_Handler,"ax",%progbits
+Default_Handler:
+Infinite_Loop:
+  b Infinite_Loop
+ 800044c:	e7fe      	b.n	800044c <ADC_IRQHandler>
+	...
+
+08000450 <__libc_init_array>:
+ 8000450:	b570      	push	{r4, r5, r6, lr}
+ 8000452:	4d0d      	ldr	r5, [pc, #52]	@ (8000488 <__libc_init_array+0x38>)
+ 8000454:	4c0d      	ldr	r4, [pc, #52]	@ (800048c <__libc_init_array+0x3c>)
+ 8000456:	1b64      	subs	r4, r4, r5
+ 8000458:	10a4      	asrs	r4, r4, #2
+ 800045a:	2600      	movs	r6, #0
+ 800045c:	42a6      	cmp	r6, r4
+ 800045e:	d109      	bne.n	8000474 <__libc_init_array+0x24>
+ 8000460:	4d0b      	ldr	r5, [pc, #44]	@ (8000490 <__libc_init_array+0x40>)
+ 8000462:	4c0c      	ldr	r4, [pc, #48]	@ (8000494 <__libc_init_array+0x44>)
+ 8000464:	f000 f818 	bl	8000498 <_init>
+ 8000468:	1b64      	subs	r4, r4, r5
+ 800046a:	10a4      	asrs	r4, r4, #2
+ 800046c:	2600      	movs	r6, #0
+ 800046e:	42a6      	cmp	r6, r4
+ 8000470:	d105      	bne.n	800047e <__libc_init_array+0x2e>
+ 8000472:	bd70      	pop	{r4, r5, r6, pc}
+ 8000474:	f855 3b04 	ldr.w	r3, [r5], #4
+ 8000478:	4798      	blx	r3
+ 800047a:	3601      	adds	r6, #1
+ 800047c:	e7ee      	b.n	800045c <__libc_init_array+0xc>
+ 800047e:	f855 3b04 	ldr.w	r3, [r5], #4
+ 8000482:	4798      	blx	r3
+ 8000484:	3601      	adds	r6, #1
+ 8000486:	e7f2      	b.n	800046e <__libc_init_array+0x1e>
+ 8000488:	080004b0 	.word	0x080004b0
+ 800048c:	080004b0 	.word	0x080004b0
+ 8000490:	080004b0 	.word	0x080004b0
+ 8000494:	080004b4 	.word	0x080004b4
+
+08000498 <_init>:
+ 8000498:	b5f8      	push	{r3, r4, r5, r6, r7, lr}
+ 800049a:	bf00      	nop
+ 800049c:	bcf8      	pop	{r3, r4, r5, r6, r7}
+ 800049e:	bc08      	pop	{r3}
+ 80004a0:	469e      	mov	lr, r3
+ 80004a2:	4770      	bx	lr
+
+080004a4 <_fini>:
+ 80004a4:	b5f8      	push	{r3, r4, r5, r6, r7, lr}
+ 80004a6:	bf00      	nop
+ 80004a8:	bcf8      	pop	{r3, r4, r5, r6, r7}
+ 80004aa:	bc08      	pop	{r3}
+ 80004ac:	469e      	mov	lr, r3
+ 80004ae:	4770      	bx	lr
