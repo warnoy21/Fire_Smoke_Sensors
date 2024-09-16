@@ -3,4 +3,6 @@
 "./Src/smoke_adc.o"
 "./Src/syscalls.o"
 "./Src/sysmem.o"
+"./Src/systick_delay.o"
+"./Src/uart_pi.o"
 "./Startup/startup_stm32f411retx.o"

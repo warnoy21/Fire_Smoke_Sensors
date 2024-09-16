@@ -1,5 +1,6 @@
 /*
  * smoke_adc.c
+ * smoke sesnsor
  * Connected to PA1 -> AO of the sensor
  *  Created on: Sep 10, 2024
  *      Author: Aaron Gumba
