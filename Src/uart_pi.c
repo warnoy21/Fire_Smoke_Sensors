@@ -1,6 +1,6 @@
 /*
  * uart_pi.c
- * PA8(USART2_TX) to communicate with the raspi (simplex)
+ * PA9(USART2_TX) to communicate with the raspi (simplex)
  *
  *  Created on: Sep 12, 2024
  *      Author: Aaron Gumba
