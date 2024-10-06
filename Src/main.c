@@ -69,11 +69,11 @@ bool fire_presence (uint32_t volatile f_val){
 
 	if (f_val > 0){
 
-		GPIOC->ODR &= ~(1U << 2); //set bit 3 (PC3 low)
+		GPIOC->ODR &= ~(1U << 2); //set bit 2 (PC2 low)
 		return false ;
 			}
 	else {
-		GPIOC->ODR |= (1U << 2);     // Set bit 3 (PC3 high)
+		GPIOC->ODR |= (1U << 2);     // Set bit 2 (PC2 high)
 		return true;
 	}
 	systickDelay(3);

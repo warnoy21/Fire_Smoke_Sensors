@@ -7,3 +7,6 @@ STM32 -> RASPI4
 STM32 -> SENSORS
 PA1 -> AO of the smoke sensor
 PA15 -> DO flame sensor
+
+PC3-> led (SM led)
+PC2-> led (FM led)
